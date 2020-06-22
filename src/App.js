@@ -20,11 +20,18 @@ export default function App() {
       setRepositories(response.data);
     });
   }, []);
+  // Utilizando 2º parâmetro do useEffect(), a solução também é viável.
+  // Porém, o resultado do teste apresenta erro.
 
   async function handleLikeRepository(id) {
     const response = await api.post(`repositories/${id}/like`);
-    const repository = response.data;
-    setRepositories([repository]);
+    const likedRepository = response.data;
+
+    const newRepositories = repositories.map(repository => (
+      repository.id === id ? likedRepository : repository
+    ));
+    
+    setRepositories(newRepositories);
   }
 
   return (
@@ -61,13 +68,9 @@ export default function App() {
                 >
                   <Text style={styles.buttonText}>Curtir</Text>
                 </TouchableOpacity>
-
               </>
             )}
           />
-
-
-
         </View>
       </SafeAreaView>
     </>
